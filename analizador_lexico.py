@@ -1,25 +1,30 @@
+from Instrucciones.aritmeticas import *
+from Instrucciones.trigonometricas import *
+from Abstract.lexema import *
+from Abstract.numero import *
+
 # palabras reservadas (lexemas)
 
 #  token | lexema
 reserved = {
-    "Reser_operacion": "operacion",
-    "reser_valor1": "valor1",
-    "reser_valor2": "valor2",
-    "reser_suma": "suma",
-    "reser_resta": "resta",
-    "reser_multiplicacion": "multipliacacion",
-    "reser_division": "division",
-    "reser_potencia": "potencia",
-    "reser_raiz": "raiz",
-    "reser_inverso": "inverso",
-    "reser_seno": "seno",
-    "reser_coseno": "coseno",
-    "reser_tangente": "tangente",
-    "reser_modulo": "modulo",
-    "reser_texto": "texto",
-    "reser_colorFondoNodo": "color_fondo_nodo",
-    "reser_colorFuenteNodo": "color_fuente_nodo",
-    "reser_formaNodo": "forma_nodo",
+    "Reser_operacion": "Operacion",
+    "reser_valor1": "Valor1",
+    "reser_valor2": "Valor2",
+    "reser_suma": "Suma",
+    "reser_resta": "Resta",
+    "reser_multiplicacion": "Multipliacacion",
+    "reser_division": "Division",
+    "reser_potencia": "Potencia",
+    "reser_raiz": "Raiz",
+    "reser_inverso": "Inverso",
+    "reser_seno": "Seno",
+    "reser_coseno": "Coseno",
+    "reser_tangente": "Tangente",
+    "reser_modulo": "Modulo",
+    "reser_texto": "Texto",
+    "reser_colorFondoNodo": "Color_Fondo_Nodo",
+    "reser_colorFuenteNodo": "Color_Fuente_Nodo",
+    "reser_formaNodo": "Forma_Nodo",
     "coma": ",",
     "punto": ".",
     "dosPuntos": ":",
@@ -39,8 +44,9 @@ global instrucciones
 global lista_lexemas
 
 n_linea = 1
-n_columna = 1
+n_columna = 0
 lista_lexemas = []
+instrucciones = []
 
 
 def instruccion(cadena):
@@ -62,8 +68,11 @@ def instruccion(cadena):
                 # +1 por la comilla de inicio
                 n_columna += 1
 
+                # Armado de lexema como clase
+                l = Lexema(lexema, n_linea, n_columna)
+
                 # se guarda el lexema en la lista
-                lista_lexemas.append(lexema)
+                lista_lexemas.append(l)
                 # +1 por la comilla final
                 n_columna += len(lexema)+1
                 puntero = 0
@@ -75,11 +84,23 @@ def instruccion(cadena):
             if token and cadena:
                 n_columna += 1
 
+                # Armado de lexema como clase
+                n = Numero(token, n_linea, n_columna)
+
                 # se guarda el lexema en la lista
-                lista_lexemas.append(token)
+                lista_lexemas.append(n)
                 # +1 por la comilla final
                 n_columna += len(str(token))+1
                 puntero = 0
+
+        elif char == "[" or char == "]":
+            # Armado de lexema como clase
+            c = Lexema(char, n_linea, n_columna)
+
+            n_columna += 1
+            lista_lexemas.append(c)
+            cadena = cadena[1:]
+            puntero = 0
 
         elif char == "\t":
             cadena = cadena[4:]
@@ -134,13 +155,7 @@ def armar_numero(cadena):
         if char == '"' or char == ' ' or char == '\n' or char == '\t':
             if is_decimal:
                 # el -1 se agrega para que la cadena devuelta tenga el salto de linea (\n), para asi sumarle la fila
-                prueba1 = cadena[len(puntero):]
-                prueba2 = cadena[len(puntero)-1:]
-                print(prueba1)
-                print(prueba2)
-
                 return float(numero), cadena[len(puntero)-1:]
-
             else:
                 return int(numero), cadena[len(puntero)-1:]
 
@@ -150,37 +165,81 @@ def armar_numero(cadena):
     return None, None
 
 
-entrada = '''
+def operar():
+    global lista_lexemas
+    global instrucciones
+    operacion = ''
+    n1 = ''
+    n2 = ''
+    # mientras exista una losta de lexemas se opera el while
+    while lista_lexemas:
+        lexema = lista_lexemas.pop(0)
+
+        if lexema.operar(None) == 'Operacion':
+            operacion = lista_lexemas.pop(0)
+        elif lexema.operar(None) == 'Valor1':
+            n1 = lista_lexemas.pop(0)
+            if n1.operar(None) == '[':
+                n1 = operar()  # se llama a el mismo hasta que devuelva un numero
+        elif lexema.operar(None) == 'Valor2':
+            n2 = lista_lexemas.pop(0)
+            if n2.operar(None) == '[':
+                n2 = operar()
+
+        if operacion and n1 and n2:
+            return Aritmetica(n1, n2, operacion, f'Inicio: {operacion.getFila()}: {operacion.getColumna()}', f'Fin: {n2.getFila()}:{n2.getColumna()}')
+
+        elif operacion and n1 and operacion.operar(None) == ('Seno' or 'Coseno' or 'Tangente'):
+            return Trigonometrica(n1, operacion, f'Inicio: {operacion.getFila()}: {operacion.getColumna()}', f'Fin: {n1.getFila()}:{n1.getColumna()}')
+    return None
+
+
+def operar_():
+    global instrucciones
+    while True:
+        operacion = operar()
+        if operacion:
+            instrucciones.append(operacion)
+        else:
+            break
+
+    for instruccion in instrucciones:
+        print(instruccion.operar(None))
+
+
+entrada = '''{
     {
- { 
-    "Operacion":"Suma"
-    "Valor1":4.5
-    "Valor2":5.32
- },
- {
-    "Operacion":"Resta"
-    "Valor1":4.5
-    "Valor2": [
+        "Operacion":"Resta"
+        "Valor1":6.5
+        "Valor2":3.5
+    },
+    {
+        "Operacion":"Multiplicacion"
+        "Valor1":4
+        "Valor2": [
             "Operacion":"Potencia"
-            "Valor1":10
-            "Valor2":3
- ]},
- {
-    "Operacion":"Suma"
-    "Valor1":[
+            "Valor1":2
+            "Valor2":[
+                "Operacion":"Raiz"
+                "Valor1":9
+                "Valor2":2
+                ]
+        ]
+    },
+    {
+        "Operacion":"Suma"
+        "Valor1":[
         "Operacion":"Seno"
         "Valor1":90
- ]
-    "Valor2":5.32
- }
- "Texto":"Realizacion de Operaciones"
- "Color-Fondo-Nodo":"Amarillo"
- "Color-Fuente-Nodo":"Rojo"
- "Forma-Nodo":"Circulo"
-}
-
-
-'''
+        ]
+        "Valor2":5.32
+    }
+    "Texto":"Realizacion de Operaciones"
+    "Color-Fondo-Nodo":"Amarillo"
+    "Color-Fuente-Nodo":"Rojo"
+    "Forma-Nodo":"Circulo"
+}'''
 
 
 instruccion(entrada)
+operar_()
