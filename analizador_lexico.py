@@ -1,7 +1,10 @@
+import graphviz
 from Instrucciones.aritmeticas import *
 from Instrucciones.trigonometricas import *
 from Abstract.lexema import *
 from Abstract.numero import *
+import os
+
 
 # palabras reservadas (lexemas)
 
@@ -12,7 +15,7 @@ reserved = {
     "reser_valor2": "Valor2",
     "reser_suma": "Suma",
     "reser_resta": "Resta",
-    "reser_multiplicacion": "Multipliacacion",
+    "reser_multiplicacion": "Multiplicacion",
     "reser_division": "Division",
     "reser_potencia": "Potencia",
     "reser_raiz": "Raiz",
@@ -82,7 +85,7 @@ def instruccion(cadena):
             token, cadena = armar_numero(cadena)
 
             if token and cadena:
-                n_columna += 1
+                # n_columna += 1
 
                 # Armado de lexema como clase
                 n = Numero(token, n_linea, n_columna)
@@ -90,7 +93,7 @@ def instruccion(cadena):
                 # se guarda el lexema en la lista
                 lista_lexemas.append(n)
                 # +1 por la comilla final
-                n_columna += len(str(token))+1
+                n_columna += len(str(token))
                 puntero = 0
 
         elif char == "[" or char == "]":
@@ -117,8 +120,10 @@ def instruccion(cadena):
             puntero = 0
             n_columna += 1
 
-    for lexema in lista_lexemas:
-        print(lexema)
+    # for lexema in lista_lexemas:
+    #     print(lexema)
+
+    return lista_lexemas
 
 
 def armar_lexema(cadena):
@@ -151,8 +156,8 @@ def armar_numero(cadena):
         if char == ".":
             is_decimal = True
 
-        # cuando termina de leer el numero se enceuntran espacios
-        if char == '"' or char == ' ' or char == '\n' or char == '\t':
+        # se comprueba cuando es que termino de leer el numero
+        if char == '"' or char == ' ' or char == '\n' or char == '\t' or char == ']':
             if is_decimal:
                 # el -1 se agrega para que la cadena devuelta tenga el salto de linea (\n), para asi sumarle la fila
                 return float(numero), cadena[len(puntero)-1:]
@@ -186,32 +191,105 @@ def operar():
             if n2.operar(None) == '[':
                 n2 = operar()
 
+        # se arma la operacion segun sea aritmetico o trigonometrica
+
         if operacion and n1 and n2:
+
+            # print("Operacion===>", operacion.lexema)
+            # print("N1===>", n1.operar(None))
+            # print("N2===>", n2.operar(None))
+            # graficar(operacion.lexema, n1.operar(None), n2.operar(None))
+
             return Aritmetica(n1, n2, operacion, f'Inicio: {operacion.getFila()}: {operacion.getColumna()}', f'Fin: {n2.getFila()}:{n2.getColumna()}')
 
         elif operacion and n1 and operacion.operar(None) == ('Seno' or 'Coseno' or 'Tangente'):
+
             return Trigonometrica(n1, operacion, f'Inicio: {operacion.getFila()}: {operacion.getColumna()}', f'Fin: {n1.getFila()}:{n1.getColumna()}')
+
     return None
 
 
 def operar_():
     global instrucciones
     while True:
+
         operacion = operar()
+        # se agregan los objetos que son operaciones a instrucciones
         if operacion:
             instrucciones.append(operacion)
         else:
             break
 
     for instruccion in instrucciones:
-        print(instruccion.operar(None))
+
+        # print(type(instruccion) )
+        # de momento solo imprime la operacion superior
+        print("Tipo===>", instruccion.tipo.operar(None))
+        print("N1===>", instruccion.left.operar(None))
+
+        if (type(instruccion) is Aritmetica):
+
+            try:
+                print("==== in the deep ====")
+                print("Tipo===>", instruccion.right.tipo.operar(None))
+                print("N1===>", instruccion.right.left.operar(None))
+                print("N1===>", instruccion.right.right.operar(None))
+
+            except:
+                pass
+
+        try:
+            print("N2===>", instruccion.right.operar(None))
+
+        except:
+            pass
+
+        print("Resultado===>", instruccion.operar(None))
+
+        # print("Operacion===>", operacion.lexema)
+        # print("N1===>", n1.operar(None))
+        # print("N2===>", n2.operar(None))
+
+    # for i in range(len(instrucciones)):
+    #     print("Valor1:", instrucciones[i].left.operar(None))
+    # try:
+    #     print("Valor2:", instrucciones[i].right.operar(None))
+    #     print("tipo===>", instrucciones[i].tipo.lexema)
+    #     print("resutado===>", instrucciones[i].operar(None))
+    # except:
+    #     pass
+
+    return instrucciones
+
+
+# graficar
+def graficar(tipo, left, right):
+    tipo = str(tipo)
+    left = str(left)
+    right = str(right)
+
+    d = graphviz.Digraph(filename='prueba.gv')
+
+    # cabecera
+    with d.subgraph() as s:
+        s.attr(rank='same')
+        s.node(tipo)
+
+    # Nodo , union
+    d.edges([(tipo, left), (tipo, right)])
+
+    d.view()
 
 
 entrada = '''{
     {
         "Operacion":"Resta"
-        "Valor1":6.5
-        "Valor2":3.5
+        "Valor1":650
+        "Valor2":[
+                "Operacion":"Suma"
+                "Valor1":2.11
+                "Valor2":1.5329
+                ]
     },
     {
         "Operacion":"Multiplicacion"
@@ -222,7 +300,7 @@ entrada = '''{
             "Valor2":[
                 "Operacion":"Raiz"
                 "Valor1":9
-                "Valor2":2
+                "Valor2":2 
                 ]
         ]
     },

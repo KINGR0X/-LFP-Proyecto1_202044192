@@ -7,6 +7,7 @@ class Aritmetica (Expression):
         self.left = left
         self.right = right
         self.tipo = tipo
+
         super().__init__(fila, columna)
 
     def operar(self, arbol):
