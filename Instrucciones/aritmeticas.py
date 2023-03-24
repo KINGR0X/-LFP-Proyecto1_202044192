@@ -7,7 +7,7 @@ class Aritmetica (Expression):
         self.left = left
         self.right = right
         self.tipo = tipo
-
+        self.valor = 0
         super().__init__(fila, columna)
 
     def operar(self, arbol):
@@ -16,32 +16,65 @@ class Aritmetica (Expression):
 
         if self.left != None:
             leftValue = self.left.operar(arbol)
+
         if self.right != None:
             rightValue = self.right.operar(arbol)
 
         if self.tipo.operar(arbol) == 'Suma':
-            return leftValue + rightValue
+
+            resultado = leftValue+rightValue
+            self.valor = resultado
+
+            return resultado
 
         elif self.tipo.operar(arbol) == 'Resta':
-            return leftValue - rightValue
+
+            resultado = leftValue - rightValue
+            self.valor = resultado
+
+            return resultado
 
         elif self.tipo.operar(arbol) == 'Multiplicacion':
-            return leftValue * rightValue
+
+            resultado = leftValue * rightValue
+            self.valor = resultado
+
+            return resultado
 
         elif self.tipo.operar(arbol) == 'Division':
-            return leftValue/rightValue
+
+            resultado = leftValue / rightValue
+            self.valor = resultado
+
+            return resultado
 
         elif self.tipo.operar(arbol) == 'Modulo':
-            return leftValue % rightValue
+
+            resultado = leftValue % rightValue
+            self.valor = resultado
+
+            return resultado
 
         elif self.tipo.operar(arbol) == 'Potencia':
-            return leftValue ** rightValue
+
+            resultado = leftValue ** rightValue
+            self.valor = resultado
+
+            return resultado
 
         elif self.tipo.operar(arbol) == 'Raiz':
-            return leftValue ** (1/rightValue)
+
+            resultado = leftValue ** (1/rightValue)
+            self.valor = resultado
+
+            return resultado
 
         elif self.tipo.operar(arbol) == 'Inverso':
-            return 1/leftValue
+
+            resultado = 1/leftValue
+            self.valor = resultado
+
+            return resultado
 
         else:
             return None

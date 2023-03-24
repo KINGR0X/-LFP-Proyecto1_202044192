@@ -7,6 +7,8 @@ class Trigonometrica(Expression):
     def __init__(self, left, tipo, fila, columna):
         self.left = left
         self.tipo = tipo
+
+        self.valor = 0
         super().__init__(fila, columna)
 
     def operar(self, arbol):
@@ -16,13 +18,34 @@ class Trigonometrica(Expression):
             leftValue = self.left.operar(arbol)
 
         if self.tipo.operar(arbol) == 'Seno':
-            return sin(leftValue)
+
+            grados = leftValue
+            radianes = (grados * pi)/180
+
+            resultado = sin(radianes)
+            self.valor = resultado
+
+            return resultado
 
         elif self.tipo.operar(arbol) == 'Coseno':
-            return cos(leftValue)
+
+            grados = leftValue
+            radianes = (grados * pi)/180
+
+            resultado = cos(radianes)
+            self.valor = resultado
+
+            return resultado
 
         elif self.tipo.operar(arbol) == 'Tangente':
-            return tan(leftValue)
+
+            grados = leftValue
+            radianes = (grados * pi)/180
+
+            resultado = tan(radianes)
+            self.valor = resultado
+
+            return resultado
 
         else:
             return None

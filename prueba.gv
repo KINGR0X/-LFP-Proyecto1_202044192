@@ -1,8 +1,0 @@
-digraph {
-	{
-		rank=same
-		Suma
-	}
-	Suma -> 0.8939966636005579
-	Suma -> 5.32
-}

@@ -4,6 +4,7 @@ from Instrucciones.trigonometricas import *
 from Abstract.lexema import *
 from Abstract.numero import *
 import os
+import webbrowser
 
 
 # palabras reservadas (lexemas)
@@ -194,7 +195,6 @@ def operar():
         # se arma la operacion segun sea aritmetico o trigonometrica
 
         if operacion and n1 and n2:
-
             # print("Operacion===>", operacion.lexema)
             # print("N1===>", n1.operar(None))
             # print("N2===>", n2.operar(None))
@@ -211,6 +211,10 @@ def operar():
 
 def operar_():
     global instrucciones
+
+    left = ""
+    right = ""
+
     while True:
 
         operacion = operar()
@@ -220,65 +224,81 @@ def operar_():
         else:
             break
 
-    for instruccion in instrucciones:
-
-        # print(type(instruccion) )
-        # de momento solo imprime la operacion superior
-        print("Tipo===>", instruccion.tipo.operar(None))
-        print("N1===>", instruccion.left.operar(None))
-
-        if (type(instruccion) is Aritmetica):
-
-            try:
-                print("==== in the deep ====")
-                print("Tipo===>", instruccion.right.tipo.operar(None))
-                print("N1===>", instruccion.right.left.operar(None))
-                print("N1===>", instruccion.right.right.operar(None))
-
-            except:
-                pass
-
-        try:
-            print("N2===>", instruccion.right.operar(None))
-
-        except:
-            pass
-
-        print("Resultado===>", instruccion.operar(None))
-
-        # print("Operacion===>", operacion.lexema)
-        # print("N1===>", n1.operar(None))
-        # print("N2===>", n2.operar(None))
-
-    # for i in range(len(instrucciones)):
-    #     print("Valor1:", instrucciones[i].left.operar(None))
-    # try:
-    #     print("Valor2:", instrucciones[i].right.operar(None))
-    #     print("tipo===>", instrucciones[i].tipo.lexema)
-    #     print("resutado===>", instrucciones[i].operar(None))
-    # except:
-    #     pass
+        # Se operan para obtener los resultados de las operaciones
+        for instruccion in instrucciones:
+            instruccion.operar(None)
 
     return instrucciones
 
 
-# graficar
-def graficar(tipo, left, right):
-    tipo = str(tipo)
-    left = str(left)
-    right = str(right)
+def graficar():
+    dot = 'digraph grafo{\n'
 
-    d = graphviz.Digraph(filename='prueba.gv')
+    for i in range(len(instrucciones)):
+        dot += separar(i, 0, '', instrucciones[i])
 
-    # cabecera
-    with d.subgraph() as s:
-        s.attr(rank='same')
-        s.node(tipo)
+    dot += '}'
 
-    # Nodo , union
-    d.edges([(tipo, left), (tipo, right)])
+    return dot
 
-    d.view()
+
+def generarGrafica():
+
+    # Creación del dot
+    with open('Grafica.dot', 'w') as f:
+        f.write(graficar())
+
+    # Aqui creamos la imagen
+    os.system('dot -Tpdf Grafica.dot -o Grafica.pdf')
+
+    # obtener direccion actual
+    ruta = os.path.dirname(os.path.abspath("Grafica.pdf"))
+
+    # reta del pdf
+    archivo_pdf = ruta+"./Grafica.pdf"
+
+    path = f'file:///{archivo_pdf}'
+
+    # Abrir pdf en el navegador
+    webbrowser.open_new(path)
+
+
+def limpiarLista():
+    instrucciones.clear()
+
+
+def separar(i, id, etiqueta, objeto):
+    dot = ""
+
+    if objeto:
+        if type(objeto) == Numero:
+            # print(objeto.valor)
+            dot += f'nodo_{i}_{id}{etiqueta}[label="{objeto.valor}"];\n'
+
+        if type(objeto) == Trigonometrica:
+            # print(objeto.valor)
+            dot += f'nodo_{i}_{id}{etiqueta}[label="{objeto.tipo.lexema}\\n{objeto.valor}"];\n'
+
+            dot += separar(i, id+1, etiqueta+"_angulo", objeto.left)
+            # uniones de nodos
+            dot += f'nodo_{i}_{id}{etiqueta} -> nodo_{i}_{id+1}{etiqueta}_angulo;\n'
+
+        if type(objeto) == Aritmetica:
+            # print(objeto.tipo.lexema)
+            # print(objeto.valor)
+            dot += f'nodo_{i}_{id}{etiqueta}[label="{objeto.tipo.lexema}\\n{objeto.valor}"];\n'
+            # print("sub izquierdo")
+
+            dot += separar(i, id+1, etiqueta + "_left", objeto.left)
+            # uniones de nodos
+            dot += f'nodo_{i}_{id}{etiqueta} -> nodo_{i}_{id+1}{etiqueta}_left;\n'
+            # print("Sub derecho")
+            dot += separar(i, id+1, etiqueta+"_right", objeto.right)
+
+            # uniones de nodos
+            dot += f'nodo_{i}_{id}{etiqueta} -> nodo_{i}_{id+1}{etiqueta}_right;\n'
+
+    return dot
 
 
 entrada = '''{
@@ -307,7 +327,7 @@ entrada = '''{
     {
         "Operacion":"Suma"
         "Valor1":[
-        "Operacion":"Seno"
+        "Operacion":"Sen"
         "Valor1":90
         ]
         "Valor2":5.32
@@ -319,5 +339,6 @@ entrada = '''{
 }'''
 
 
-instruccion(entrada)
-operar_()
+# instruccion(entrada)
+# operar_()
+# generarGrafica()
