@@ -97,6 +97,22 @@ def instruccion(cadena):
                 n_columna += len(str(token))
                 puntero = 0
 
+        elif char == '-':
+            # no se recorta porque se estaria eliminando el primer numero
+            token, cadena = armar_numero(cadena)
+
+            if token and cadena:
+                # n_columna += 1
+
+                # Armado de lexema como clase
+                n = Numero(token, n_linea, n_columna)
+
+                # se guarda el lexema en la lista
+                lista_lexemas.append(n)
+                # +1 por la comilla final
+                n_columna += len(str(token))
+                puntero = 0
+
         elif char == "[" or char == "]":
             # Armado de lexema como clase
             c = Lexema(char, n_linea, n_columna)
@@ -150,9 +166,13 @@ def armar_numero(cadena):
     numero = ''
     puntero = ''
     is_decimal = False
+    isNegative = False
 
     for char in cadena:
         puntero += char
+
+        if char == "-":
+            isNegative = True
 
         if char == ".":
             is_decimal = True
@@ -162,6 +182,8 @@ def armar_numero(cadena):
             if is_decimal:
                 # el -1 se agrega para que la cadena devuelta tenga el salto de linea (\n), para asi sumarle la fila
                 return float(numero), cadena[len(puntero)-1:]
+            if isNegative:
+                return int(numero), cadena[len(puntero)-1:]
             else:
                 return int(numero), cadena[len(puntero)-1:]
 
@@ -198,7 +220,6 @@ def operar():
             # print("Operacion===>", operacion.lexema)
             # print("N1===>", n1.operar(None))
             # print("N2===>", n2.operar(None))
-            # graficar(operacion.lexema, n1.operar(None), n2.operar(None))
 
             return Aritmetica(n1, n2, operacion, f'Inicio: {operacion.getFila()}: {operacion.getColumna()}', f'Fin: {n2.getFila()}:{n2.getColumna()}')
 
@@ -272,11 +293,11 @@ def separar(i, id, etiqueta, objeto):
 
     if objeto:
         if type(objeto) == Numero:
-            # print(objeto.valor)
+            print(objeto.valor)
             dot += f'nodo_{i}_{id}{etiqueta}[label="{objeto.valor}"];\n'
 
         if type(objeto) == Trigonometrica:
-            # print(objeto.valor)
+            print(objeto.valor)
             dot += f'nodo_{i}_{id}{etiqueta}[label="{objeto.tipo.lexema}\\n{objeto.valor}"];\n'
 
             dot += separar(i, id+1, etiqueta+"_angulo", objeto.left)
@@ -284,15 +305,15 @@ def separar(i, id, etiqueta, objeto):
             dot += f'nodo_{i}_{id}{etiqueta} -> nodo_{i}_{id+1}{etiqueta}_angulo;\n'
 
         if type(objeto) == Aritmetica:
-            # print(objeto.tipo.lexema)
-            # print(objeto.valor)
+            print(objeto.tipo.lexema)
+            print(objeto.valor)
             dot += f'nodo_{i}_{id}{etiqueta}[label="{objeto.tipo.lexema}\\n{objeto.valor}"];\n'
-            # print("sub izquierdo")
+            print("sub izquierdo")
 
             dot += separar(i, id+1, etiqueta + "_left", objeto.left)
             # uniones de nodos
             dot += f'nodo_{i}_{id}{etiqueta} -> nodo_{i}_{id+1}{etiqueta}_left;\n'
-            # print("Sub derecho")
+            print("Sub derecho")
             dot += separar(i, id+1, etiqueta+"_right", objeto.right)
 
             # uniones de nodos
@@ -304,7 +325,7 @@ def separar(i, id, etiqueta, objeto):
 entrada = '''{
     {
         "Operacion":"Resta"
-        "Valor1":650
+        "Valor1":-650
         "Valor2":[
                 "Operacion":"Suma"
                 "Valor1":2.11
@@ -327,8 +348,8 @@ entrada = '''{
     {
         "Operacion":"Suma"
         "Valor1":[
-        "Operacion":"Sen"
-        "Valor1":90
+        "Operacion":"Coseno"
+        "Valor1":180
         ]
         "Valor2":5.32
     }
@@ -339,6 +360,6 @@ entrada = '''{
 }'''
 
 
-# instruccion(entrada)
-# operar_()
-# generarGrafica()
+instruccion(entrada)
+operar_()
+graficar()

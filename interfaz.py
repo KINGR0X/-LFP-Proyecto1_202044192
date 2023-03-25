@@ -87,7 +87,6 @@ class Pantalla_principal():
 
         self.cuadroTexto.place(x=0, y=0)
 
-        # Scroll en X
         # self.scrollbar_x = Scrollbar(
         #     self.cuadroTexto, orient=HORIZONTAL, command=self.cuadroTexto.xview)
 

@@ -1,3 +1,4 @@
+import math
 from Abstract.abstract import Expression
 from math import *
 
@@ -18,31 +19,30 @@ class Trigonometrica(Expression):
             leftValue = self.left.operar(arbol)
 
         if self.tipo.operar(arbol) == 'Seno':
+            # se convierte a radianes y se redondea a 2 decimales
+            resultado = math.sin(math.radians(leftValue))
+            resultado = round(resultado, 2)
 
-            grados = leftValue
-            radianes = (grados * pi)/180
-
-            resultado = sin(radianes)
             self.valor = resultado
 
             return resultado
 
         elif self.tipo.operar(arbol) == 'Coseno':
 
-            grados = leftValue
-            radianes = (grados * pi)/180
+            # se convierte a radianes y se redondea a 2 decimales
+            resultado = math.cos(math.radians(leftValue))
+            resultado = round(resultado, 2)
 
-            resultado = cos(radianes)
             self.valor = resultado
 
             return resultado
 
         elif self.tipo.operar(arbol) == 'Tangente':
 
-            grados = leftValue
-            radianes = (grados * pi)/180
+            # se convierte a radianes y se redondea a 2 decimales
+            resultado = math.tan(math.radians(leftValue))
+            resultado = round(resultado, 2)
 
-            resultado = tan(radianes)
             self.valor = resultado
 
             return resultado
