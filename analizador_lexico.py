@@ -224,7 +224,6 @@ def operar():
             return Aritmetica(n1, n2, operacion, f'Inicio: {operacion.getFila()}: {operacion.getColumna()}', f'Fin: {n2.getFila()}:{n2.getColumna()}')
 
         elif operacion and n1 and (operacion.operar(None) == 'Seno' or operacion.operar(None) == 'Coseno' or operacion.operar(None) == 'Tangente'):
-            print("TRIGONOMETRICA", operacion.operar(None))
 
             return Trigonometrica(n1, operacion, f'Inicio: {operacion.getFila()}: {operacion.getColumna()}', f'Fin: {n1.getFila()}:{n1.getColumna()}')
 
@@ -264,20 +263,23 @@ def graficar():
     return dot
 
 
-def generarGrafica():
+def generarGrafica(nombreGrafica):
+
+    nombre = nombreGrafica+".dot"
 
     # Creación del dot
-    with open('Grafica.dot', 'w') as f:
+    with open(nombre, 'w') as f:
         f.write(graficar())
 
-    # Aqui creamos la imagen
-    os.system('dot -Tpdf Grafica.dot -o Grafica.pdf')
+    # creamos la imagen
+    os.system(
+        f'dot -Tpdf {nombre} -o {nombreGrafica}.pdf')
 
     # obtener direccion actual
-    ruta = os.path.dirname(os.path.abspath("Grafica.pdf"))
+    ruta = os.path.dirname(os.path.abspath(f"{nombreGrafica}.pdf"))
 
     # reta del pdf
-    archivo_pdf = ruta+"./Grafica.pdf"
+    archivo_pdf = ruta+f"\{nombreGrafica}.pdf"
 
     path = f'file:///{archivo_pdf}'
 

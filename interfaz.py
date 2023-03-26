@@ -6,6 +6,7 @@ from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
 from tkinter import scrolledtext
+from tkinter.filedialog import asksaveasfilename
 from analizador_lexico import instruccion, operar_, generarGrafica, limpiarLista
 import os
 
@@ -43,11 +44,11 @@ class Pantalla_principal():
             "Roboto Mono", 20), fg="black",
             bg="white", width=12).place(x=posicionx1, y=60)
 
-        Button(self.Frame, text="Guardar", font=(
+        Button(self.Frame, command=self.guardar, text="Guardar", font=(
             "Roboto Mono", 20), fg="black",
             bg="white", width=12).place(x=posicionx1, y=130)
 
-        Button(self.Frame, text="Guardar como", font=(
+        Button(self.Frame, command=self.guardarComo, text="Guardar como", font=(
             "Roboto Mono", 20), fg="black",
             bg="white", width=12).place(x=posicionx1, y=200)
 
@@ -98,16 +99,24 @@ class Pantalla_principal():
 
     def abrirArchivo(self):
         x = ""
+        self.archivo_seleccionado = ''
         Tk().withdraw()
 
         try:
-            filename = askopenfilename(
-                title="Seleccione un archivo", filetypes=[("Archivos lfp", f"*.lfp *.txt"), ("All files", "*")])
+            self.archivo_seleccionado = filename = askopenfilename(
+                title="Seleccione un archivo", filetypes=[("Archivos txt", f"*.txt"), ("Archivos lfp", f"*.lfp"), ("All files", "*")])
 
             with open(filename, encoding="utf-8") as infile:
                 x = infile.read()
 
             self.texto = x
+
+            # se separa el nombre del archivo en directorio y nombre
+            os.path.split(filename)
+            # se obtiene el nombre del archivo con la extension
+            self.filename = os.path.split(filename)[1]
+            # se obtiene el nombre del archivo sin la extension
+            self.filename = os.path.splitext(self.filename)[0]
 
             # Elimina contenido del cuadro
             self.cuadroTexto.delete(1.0, "end")
@@ -122,23 +131,53 @@ class Pantalla_principal():
 
     def ejecutar(self):
 
-        if os.path.isfile('Grafica.dot'):
-            os.remove('Grafica.dot')
-            os.remove('Grafica.pdf')
-            limpiarLista()
+        limpiarLista()
         try:
             instruccion(self.texto)
             operar_()
-            generarGrafica()
+            generarGrafica(str(self.filename))
 
             # set contenido
-            self.cuadroTexto.insert(
-                1.0, "== Archivo .pdf Creado con exito ==\n\n")
+            messagebox.showinfo("Analisis completado",
+                                "Analisis realizado con exito, archivo .dot y .pdf generados")
 
         except:
             messagebox.showerror(
                 "Error", "No se ha seleccionado ningún archivo")
             return
 
-        # mostrar pantalla
+    def guardar(self):
+        # Tomar datos que esta en el cuadro de texto
+        self.texto = self.cuadroTexto.get(1.0, "end")
+
+        archivo = open(self.archivo_seleccionado, 'w', encoding="utf-8")
+        archivo.write(self.texto)
+
+        # mensaje de guardado
+        messagebox.showinfo("Guardado", "Archivo guardado con exito")
+
+    def guardarComo(self):
+        try:
+            # Tomar datos que esta en el cuadro de texto
+            self.texto = self.cuadroTexto.get(1.0, "end")
+
+            self.extensions = [("Archivos txt", f".txt"),
+                               ("Archivos lfp", f".lfp"), ("All files", "*")]
+
+            self.archivo_seleccionado = filename = asksaveasfilename(
+                title="Seleccione un archivo", filetypes=[("Archivos txt", f".txt"), ("Archivos lfp", f".lfp"), ("All files", "*")], defaultextension=self.extensions, initialfile="Documento")
+
+            archivo = open(self.archivo_seleccionado, 'w', encoding="utf-8")
+            archivo.write(self.texto)
+
+            # mensaje de guardado
+            messagebox.showinfo("Guardado", "Archivo guardado con exito")
+
+        except:
+            messagebox.showerror(
+                "Error", "No se ha seleccionado ningún archivo")
+            return
+
+
+# mostrar pantalla
 r = Pantalla_principal()
