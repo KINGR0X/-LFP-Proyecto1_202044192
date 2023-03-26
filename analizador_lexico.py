@@ -223,7 +223,8 @@ def operar():
 
             return Aritmetica(n1, n2, operacion, f'Inicio: {operacion.getFila()}: {operacion.getColumna()}', f'Fin: {n2.getFila()}:{n2.getColumna()}')
 
-        elif operacion and n1 and operacion.operar(None) == ('Seno' or 'Coseno' or 'Tangente'):
+        elif operacion and n1 and (operacion.operar(None) == 'Seno' or operacion.operar(None) == 'Coseno' or operacion.operar(None) == 'Tangente'):
+            print("TRIGONOMETRICA", operacion.operar(None))
 
             return Trigonometrica(n1, operacion, f'Inicio: {operacion.getFila()}: {operacion.getColumna()}', f'Fin: {n1.getFila()}:{n1.getColumna()}')
 
@@ -293,11 +294,11 @@ def separar(i, id, etiqueta, objeto):
 
     if objeto:
         if type(objeto) == Numero:
-            print(objeto.valor)
+            # print(objeto.valor)
             dot += f'nodo_{i}_{id}{etiqueta}[label="{objeto.valor}"];\n'
 
         if type(objeto) == Trigonometrica:
-            print(objeto.valor)
+            # print(objeto.valor)
             dot += f'nodo_{i}_{id}{etiqueta}[label="{objeto.tipo.lexema}\\n{objeto.valor}"];\n'
 
             dot += separar(i, id+1, etiqueta+"_angulo", objeto.left)
@@ -305,15 +306,15 @@ def separar(i, id, etiqueta, objeto):
             dot += f'nodo_{i}_{id}{etiqueta} -> nodo_{i}_{id+1}{etiqueta}_angulo;\n'
 
         if type(objeto) == Aritmetica:
-            print(objeto.tipo.lexema)
-            print(objeto.valor)
+            # print(objeto.tipo.lexema)
+            # print(objeto.valor)
             dot += f'nodo_{i}_{id}{etiqueta}[label="{objeto.tipo.lexema}\\n{objeto.valor}"];\n'
-            print("sub izquierdo")
+            # print("sub izquierdo")
 
             dot += separar(i, id+1, etiqueta + "_left", objeto.left)
             # uniones de nodos
             dot += f'nodo_{i}_{id}{etiqueta} -> nodo_{i}_{id+1}{etiqueta}_left;\n'
-            print("Sub derecho")
+            # print("Sub derecho")
             dot += separar(i, id+1, etiqueta+"_right", objeto.right)
 
             # uniones de nodos
@@ -360,6 +361,6 @@ entrada = '''{
 }'''
 
 
-instruccion(entrada)
-operar_()
-graficar()
+# instruccion(entrada)
+# operar_()
+# graficar()

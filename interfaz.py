@@ -102,7 +102,7 @@ class Pantalla_principal():
 
         try:
             filename = askopenfilename(
-                title="Seleccione un archivo", filetypes=[("Archivos lfp", f"*.lfp"), ("All files", "*")])
+                title="Seleccione un archivo", filetypes=[("Archivos lfp", f"*.lfp *.txt"), ("All files", "*")])
 
             with open(filename, encoding="utf-8") as infile:
                 x = infile.read()
@@ -131,11 +131,9 @@ class Pantalla_principal():
             operar_()
             generarGrafica()
 
-            # Elimina contenido del cuadro
-            self.cuadroTexto.delete(1.0, "end")
-
             # set contenido
-            self.cuadroTexto.insert(1.0, "Archivo .pdf Creado con exito")
+            self.cuadroTexto.insert(
+                1.0, "== Archivo .pdf Creado con exito ==\n\n")
 
         except:
             messagebox.showerror(
