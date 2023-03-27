@@ -347,7 +347,7 @@ def getErrores():
     for i in range(len(lista_errores)):
         error = lista_errores[i]
         formatoErrores += error.operar(i+1)
-        if len(lista_errores) != 0:
+        if i != len(lista_errores)-1:
             formatoErrores += ',\n'
         else:
             formatoErrores += '\n'
@@ -375,8 +375,12 @@ def CrearArchivoErrores():
     with open(nombre, 'w') as f:
         f.write(getErrores())
 
-    # creamos la imagen
-    os.system(nombre)
+    # obtener direccion actual
+    ruta = os.path.abspath(nombre)
+
+    print(ruta)
+
+    os.system(f'start notepad.exe {ruta}')
 
 
 entrada = '''{
