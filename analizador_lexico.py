@@ -48,12 +48,14 @@ global n_columna
 global instrucciones
 global lista_lexemas
 global lista_errores
+global lista_DatosGraphviz
 
 n_linea = 1
 n_columna = 0
 lista_lexemas = []
 instrucciones = []
 lista_errores = []
+lista_DatosGraphviz = []
 
 
 def instruccion(cadena):
@@ -238,6 +240,22 @@ def operar():
     return None
 
 
+# Antes de operar y eliminar los valores de la lista de lexemas, se guardan los datos para el grafico
+def lexemas_grafico():
+    global lista_lexemas
+
+    for i in range(len(lista_lexemas)):
+        lexema = lista_lexemas[i]
+        if lexema.operar(None) == 'Texto':
+            lista_DatosGraphviz.append(lista_lexemas[i+1].operar(None))
+        if lexema.operar(None) == 'Color-Fondo-Nodo':
+            lista_DatosGraphviz.append(lista_lexemas[i+1].operar(None))
+        elif lexema.operar(None) == 'Color-Fuente-Nodo':
+            lista_DatosGraphviz.append(lista_lexemas[i+1].operar(None))
+        elif lexema.operar(None) == 'Forma-Nodo':
+            lista_DatosGraphviz.append(lista_lexemas[i+1].operar(None))
+
+
 def operar_():
     global instrucciones
 
@@ -261,10 +279,18 @@ def operar_():
 
 
 def graficar():
+
+    titulo = lista_DatosGraphviz[0]
+
     dot = 'digraph grafo{\n'
 
     for i in range(len(instrucciones)):
         dot += separar(i, 0, '', instrucciones[i])
+
+    dot += f'''
+    labelloc = "t"
+    label = "{titulo}"
+    '''
 
     dot += '}'
 
@@ -297,6 +323,7 @@ def generarGrafica(nombreGrafica):
 
 def limpiarLista():
     instrucciones.clear()
+    lista_DatosGraphviz.clear()
 
 
 def limpiarListaErrores():
@@ -306,16 +333,86 @@ def limpiarListaErrores():
 
 
 def separar(i, id, etiqueta, objeto):
+
+    global lista_DatosGraphviz
+
+    colorFondo = lista_DatosGraphviz[1]
+    colorFuente = lista_DatosGraphviz[2]
+    forma = lista_DatosGraphviz[3]
+
+    rojo = '#ff0000'
+    amarillo = '#ffff00'
+    azul = '#00ff00'
+    Morado = '#8a2be2'
+    naranja = '#ffa500'
+    verde = '#008000'
+    negro = '#000000'
+
+    # se establecen los colores de fondo
+    if colorFondo == "Rojo":
+        colorFondo = "red"
+    elif colorFondo == "Amarillo":
+        colorFondo = "yellow"
+    elif colorFondo == "Azul":
+        colorFondo = "blue"
+    elif colorFondo == "Morado":
+        colorFondo = "purple"
+    elif colorFondo == "Naranja" or colorFondo == "Anaranjado":
+        colorFondo = "orange"
+    elif colorFondo == "Verde":
+        colorFondo = "green"
+    else:
+        colorFondo = "yellow"
+
+    # se establecen los colores de fuente
+    if colorFuente == "Rojo":
+        colorFuente = rojo
+    elif colorFuente == "Amarillo":
+        colorFuente = amarillo
+    elif colorFuente == "Azul":
+        colorFuente = azul
+    elif colorFuente == "Morado":
+        colorFuente = Morado
+    elif colorFuente == "Naranja" or colorFuente == "Anaranjado":
+        colorFuente = naranja
+    elif colorFuente == "Verde":
+        colorFuente = verde
+    elif colorFuente == "Negro":
+        colorFuente = negro
+    else:
+        colorFuente = rojo
+
+    # se establecen las formas
+    if forma == "Circulo":
+        forma = "circle"
+    elif forma == "Cuadrado":
+        forma = "box"
+    elif forma == "Poligono" or forma == "Polígono":
+        forma = "polygon"
+    elif forma == "Elipse":
+        forma = "ellipse"
+    elif forma == "Triangulo":
+        forma = "triangle"
+    elif forma == "Ovalo":
+        forma = "oval"
+    elif forma == "Rombo":
+        forma = "diamond"
+    elif forma == "Trapezoide":
+        forma = "trapezium"
+    else:
+        forma = "oval"
+
+        # ===============================================
     dot = ""
 
     if objeto:
         if type(objeto) == Numero:
             # print(objeto.valor)
-            dot += f'nodo_{i}_{id}{etiqueta}[label="{objeto.valor}"];\n'
+            dot += f'nodo_{i}_{id}{etiqueta}[label="{objeto.valor}",fontcolor="{colorFuente}",fillcolor={colorFondo}, style=filled,shape={forma}];\n'
 
         if type(objeto) == Trigonometrica:
             # print(objeto.valor)
-            dot += f'nodo_{i}_{id}{etiqueta}[label="{objeto.tipo.lexema}\\n{objeto.valor}"];\n'
+            dot += f'nodo_{i}_{id}{etiqueta}[label="{objeto.tipo.lexema}\\n{objeto.valor}",fontcolor="{colorFuente}",fillcolor={colorFondo}, style=filled,shape={forma}];\n'
 
             dot += separar(i, id+1, etiqueta+"_angulo", objeto.left)
             # uniones de nodos
@@ -324,7 +421,7 @@ def separar(i, id, etiqueta, objeto):
         if type(objeto) == Aritmetica:
             # print(objeto.tipo.lexema)
             # print(objeto.valor)
-            dot += f'nodo_{i}_{id}{etiqueta}[label="{objeto.tipo.lexema}\\n{objeto.valor}"];\n'
+            dot += f'nodo_{i}_{id}{etiqueta}[label="{objeto.tipo.lexema}\\n{objeto.valor}",fontcolor="{colorFuente}",fillcolor={colorFondo}, style=filled,shape={forma}];\n'
             # print("sub izquierdo")
 
             dot += separar(i, id+1, etiqueta + "_left", objeto.left)
@@ -414,15 +511,17 @@ entrada = '''{
         ]
         "Valor2":5.32
     }
-    "Texto":"Realizacion de Operaciones"
+    "Texto":"===Realizacion de Operaciones===="
     "Color-Fondo-Nodo":"Amarillo"
-    "Color-Fuente-Nodo":"Rojo"
-    "Forma-Nodo":"Circulo"
+    "Color-Fuente-Nodo":"Verde"
+    "Forma-Nodo":"Ovaloasd"
 }'''
 
 
 # instruccion(entrada)
+# lexemas_grafico()
 # operar_()
 # graficar()
+# generarGrafica(str("RESULTADOS_202044192"))
 
 # CrearArchivoErrores()

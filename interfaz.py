@@ -7,7 +7,7 @@ from tkinter import ttk
 from tkinter import messagebox
 from tkinter import scrolledtext
 from tkinter.filedialog import asksaveasfilename
-from analizador_lexico import instruccion, operar_, generarGrafica, limpiarLista,  CrearArchivoErrores, limpiarListaErrores
+from analizador_lexico import instruccion, operar_, generarGrafica, limpiarLista,  CrearArchivoErrores, limpiarListaErrores, lexemas_grafico
 import os
 
 
@@ -139,6 +139,7 @@ class Pantalla_principal():
         limpiarLista()
         try:
             instruccion(self.texto)
+            lexemas_grafico()
             operar_()
             generarGrafica(str("RESULTADOS_202044192"))
 

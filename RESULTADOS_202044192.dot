@@ -1,0 +1,34 @@
+digraph grafo{
+nodo_0_0[label="Resta\n-18.6429",fontcolor="#000000",fillcolor=orange, style=filled,shape=box];
+nodo_0_1_left[label="-15",fontcolor="#000000",fillcolor=orange, style=filled,shape=box];
+nodo_0_0 -> nodo_0_1_left;
+nodo_0_1_right[label="Suma\n3.6429",fontcolor="#000000",fillcolor=orange, style=filled,shape=box];
+nodo_0_2_right_left[label="2.11",fontcolor="#000000",fillcolor=orange, style=filled,shape=box];
+nodo_0_1_right -> nodo_0_2_right_left;
+nodo_0_2_right_right[label="1.5329",fontcolor="#000000",fillcolor=orange, style=filled,shape=box];
+nodo_0_1_right -> nodo_0_2_right_right;
+nodo_0_0 -> nodo_0_1_right;
+nodo_1_0[label="Multiplicacion\n32.0",fontcolor="#000000",fillcolor=orange, style=filled,shape=box];
+nodo_1_1_left[label="4",fontcolor="#000000",fillcolor=orange, style=filled,shape=box];
+nodo_1_0 -> nodo_1_1_left;
+nodo_1_1_right[label="Potencia\n8.0",fontcolor="#000000",fillcolor=orange, style=filled,shape=box];
+nodo_1_2_right_left[label="2",fontcolor="#000000",fillcolor=orange, style=filled,shape=box];
+nodo_1_1_right -> nodo_1_2_right_left;
+nodo_1_2_right_right[label="Raiz\n3.0",fontcolor="#000000",fillcolor=orange, style=filled,shape=box];
+nodo_1_3_right_right_left[label="9",fontcolor="#000000",fillcolor=orange, style=filled,shape=box];
+nodo_1_2_right_right -> nodo_1_3_right_right_left;
+nodo_1_3_right_right_right[label="2",fontcolor="#000000",fillcolor=orange, style=filled,shape=box];
+nodo_1_2_right_right -> nodo_1_3_right_right_right;
+nodo_1_1_right -> nodo_1_2_right_right;
+nodo_1_0 -> nodo_1_1_right;
+nodo_2_0[label="Suma\n4.32",fontcolor="#000000",fillcolor=orange, style=filled,shape=box];
+nodo_2_1_left[label="Coseno\n-1.0",fontcolor="#000000",fillcolor=orange, style=filled,shape=box];
+nodo_2_2_left_angulo[label="180",fontcolor="#000000",fillcolor=orange, style=filled,shape=box];
+nodo_2_1_left -> nodo_2_2_left_angulo;
+nodo_2_0 -> nodo_2_1_left;
+nodo_2_1_right[label="5.32",fontcolor="#000000",fillcolor=orange, style=filled,shape=box];
+nodo_2_0 -> nodo_2_1_right;
+
+    labelloc = "t"
+    label = "LFP"
+    }
