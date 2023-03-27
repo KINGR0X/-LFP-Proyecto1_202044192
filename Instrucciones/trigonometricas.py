@@ -9,7 +9,6 @@ class Trigonometrica(Expression):
         self.left = left
         self.tipo = tipo
 
-        self.valor = 0
         super().__init__(fila, columna)
 
     def operar(self, arbol):
@@ -23,8 +22,6 @@ class Trigonometrica(Expression):
             resultado = math.sin(math.radians(leftValue))
             resultado = round(resultado, 2)
 
-            self.valor = resultado
-
             return resultado
 
         elif self.tipo.operar(arbol) == 'Coseno':
@@ -33,8 +30,6 @@ class Trigonometrica(Expression):
             resultado = math.cos(math.radians(leftValue))
             resultado = round(resultado, 2)
 
-            self.valor = resultado
-
             return resultado
 
         elif self.tipo.operar(arbol) == 'Tangente':
@@ -42,8 +37,6 @@ class Trigonometrica(Expression):
             # se convierte a radianes y se redondea a 2 decimales
             resultado = math.tan(math.radians(leftValue))
             resultado = round(resultado, 2)
-
-            self.valor = resultado
 
             return resultado
 

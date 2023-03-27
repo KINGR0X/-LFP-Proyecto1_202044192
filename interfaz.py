@@ -72,15 +72,15 @@ class Pantalla_principal():
 
         # botones de Ayuda
 
-        Button(self.Frame, text="Manual de usuario", font=(
+        Button(self.Frame, command=self.ManualUsuario, text="Manual de usuario", font=(
             "Roboto Mono", 20), fg="black",
             bg="white", width=14).place(x=posicionx2, y=60)
 
-        Button(self.Frame, text="Manual técnico", font=(
+        Button(self.Frame, command=self.ManualTecnico, text="Manual técnico", font=(
             "Roboto Mono", 20), fg="black",
             bg="white", width=14).place(x=posicionx2, y=130)
 
-        Button(self.Frame, text="Temas de ayuda", font=(
+        Button(self.Frame, command=self.TemasDeAyuda, text="Temas de ayuda", font=(
             "Roboto Mono", 20), fg="black",
             bg="white", width=14).place(x=posicionx2, y=200)
 
@@ -206,6 +206,37 @@ class Pantalla_principal():
                 "Error", "No se ha podido generar el archivo de errores")
             return
 
+    def ManualUsuario(self):
+        try:
+            # obtener direccion actual
+            ruta = os.path.abspath("Manual_de_usuario.md")
 
-# mostrar pantalla
+            print(ruta)
+
+            # se abre el archivo co Visual Studio Code
+            os.system(f'code {ruta}')
+        except:
+            messagebox.showerror(
+                "Error", "No se ha podido abrir el archivo, asegurese de tener instalado Visual Studio Code")
+            return
+
+    def ManualTecnico(self):
+        try:
+            # obtener direccion actual
+            ruta = os.path.abspath("Manual_tecnico.md")
+
+            print(ruta)
+
+            # se abre el archivo co Visual Studio Code
+            os.system(f'code {ruta}')
+        except:
+            messagebox.showerror(
+                "Error", "No se ha podido abrir el archivo, asegurese de tener instalado Visual Studio Code")
+            return
+
+    def TemasDeAyuda(self):
+        messagebox.showinfo(
+            "Temas de ayuda", "Nombre: Elian Angel Fernando Reyes Yac\nCarnet: 202044192\nCurso:Lenguajes Formales y de Poramación\nSección: B+\n")
+
+        # mostrar pantalla
 r = Pantalla_principal()

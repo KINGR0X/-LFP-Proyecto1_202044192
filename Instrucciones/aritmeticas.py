@@ -7,7 +7,6 @@ class Aritmetica (Expression):
         self.left = left
         self.right = right
         self.tipo = tipo
-        self.valor = 0
         super().__init__(fila, columna)
 
     def operar(self, arbol):
@@ -23,56 +22,48 @@ class Aritmetica (Expression):
         if self.tipo.operar(arbol) == 'Suma':
 
             resultado = leftValue+rightValue
-            self.valor = resultado
 
             return resultado
 
         elif self.tipo.operar(arbol) == 'Resta':
 
             resultado = leftValue - rightValue
-            self.valor = resultado
 
             return resultado
 
         elif self.tipo.operar(arbol) == 'Multiplicacion':
 
             resultado = leftValue * rightValue
-            self.valor = resultado
 
             return resultado
 
         elif self.tipo.operar(arbol) == 'Division':
 
             resultado = leftValue / rightValue
-            self.valor = resultado
 
             return resultado
 
         elif self.tipo.operar(arbol) == 'Modulo':
 
             resultado = leftValue % rightValue
-            self.valor = resultado
 
             return resultado
 
         elif self.tipo.operar(arbol) == 'Potencia':
 
             resultado = leftValue ** rightValue
-            self.valor = resultado
 
             return resultado
 
         elif self.tipo.operar(arbol) == 'Raiz':
 
             resultado = leftValue ** (1/rightValue)
-            self.valor = resultado
 
             return resultado
 
         elif self.tipo.operar(arbol) == 'Inverso':
 
             resultado = 1/leftValue
-            self.valor = resultado
 
             return resultado
 

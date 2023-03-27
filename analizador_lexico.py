@@ -408,30 +408,30 @@ def separar(i, id, etiqueta, objeto):
     if objeto:
         if type(objeto) == Numero:
             # print(objeto.valor)
-            dot += f'nodo_{i}_{id}{etiqueta}[label="{objeto.valor}",fontcolor="{colorFuente}",fillcolor={colorFondo}, style=filled,shape={forma}];\n'
+            dot += f'nodo_{i}{id}{etiqueta}[label="{objeto.operar(None)}",fontcolor="{colorFuente}",fillcolor={colorFondo}, style=filled,shape={forma}];\n'
 
         if type(objeto) == Trigonometrica:
             # print(objeto.valor)
-            dot += f'nodo_{i}_{id}{etiqueta}[label="{objeto.tipo.lexema}\\n{objeto.valor}",fontcolor="{colorFuente}",fillcolor={colorFondo}, style=filled,shape={forma}];\n'
+            dot += f'nodo_{i}{id}{etiqueta}[label="{objeto.tipo.lexema}\\n{objeto.operar(None)}",fontcolor="{colorFuente}",fillcolor={colorFondo}, style=filled,shape={forma}];\n'
 
             dot += separar(i, id+1, etiqueta+"_angulo", objeto.left)
             # uniones de nodos
-            dot += f'nodo_{i}_{id}{etiqueta} -> nodo_{i}_{id+1}{etiqueta}_angulo;\n'
+            dot += f'nodo_{i}{id}{etiqueta} -> nodo_{i}{id+1}{etiqueta}_angulo;\n'
 
         if type(objeto) == Aritmetica:
             # print(objeto.tipo.lexema)
             # print(objeto.valor)
-            dot += f'nodo_{i}_{id}{etiqueta}[label="{objeto.tipo.lexema}\\n{objeto.valor}",fontcolor="{colorFuente}",fillcolor={colorFondo}, style=filled,shape={forma}];\n'
+            dot += f'nodo_{i}{id}{etiqueta}[label="{objeto.tipo.lexema}\\n{objeto.operar(None)}",fontcolor="{colorFuente}",fillcolor={colorFondo}, style=filled,shape={forma}];\n'
             # print("sub izquierdo")
 
             dot += separar(i, id+1, etiqueta + "_left", objeto.left)
             # uniones de nodos
-            dot += f'nodo_{i}_{id}{etiqueta} -> nodo_{i}_{id+1}{etiqueta}_left;\n'
+            dot += f'nodo_{i}{id}{etiqueta} -> nodo_{i}{id+1}{etiqueta}_left;\n'
             # print("Sub derecho")
             dot += separar(i, id+1, etiqueta+"_right", objeto.right)
 
             # uniones de nodos
-            dot += f'nodo_{i}_{id}{etiqueta} -> nodo_{i}_{id+1}{etiqueta}_right;\n'
+            dot += f'nodo_{i}{id}{etiqueta} -> nodo_{i}{id+1}{etiqueta}_right;\n'
 
     return dot
 
