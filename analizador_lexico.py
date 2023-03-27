@@ -3,6 +3,7 @@ from Instrucciones.aritmeticas import *
 from Instrucciones.trigonometricas import *
 from Abstract.lexema import *
 from Abstract.numero import *
+from Errores.errores import *
 import os
 import webbrowser
 
@@ -46,11 +47,13 @@ global n_linea
 global n_columna
 global instrucciones
 global lista_lexemas
+global lista_errores
 
 n_linea = 1
 n_columna = 0
 lista_lexemas = []
 instrucciones = []
+lista_errores = []
 
 
 def instruccion(cadena):
@@ -59,7 +62,6 @@ def instruccion(cadena):
     global lista_lexemas
     lexema = ""
     puntero = 0
-
     while cadena:
         char = cadena[puntero]
         puntero += 1
@@ -129,13 +131,19 @@ def instruccion(cadena):
 
         elif char == "\n":
             cadena = cadena[1:]
-            n_columna = 1
+            n_columna = 0
             n_linea += 1
             puntero = 0
-        else:  # Este else sirve para sumar los espacios en blanco, por eso se reinicia el puntero
+
+        elif char == ' ' or char == '\r' or char == '{' or char == '}' or char == ',' or char == ':' or char == '.':
+            cadena = cadena[1:]
+            n_columna += 1
+            puntero = 0
+        else:
             cadena = cadena[1:]
             puntero = 0
             n_columna += 1
+            lista_errores.append(Errores(char, n_linea, n_columna))
 
     # for lexema in lista_lexemas:
     #     print(lexema)
@@ -291,6 +299,12 @@ def limpiarLista():
     instrucciones.clear()
 
 
+def limpiarListaErrores():
+    global n_linea
+    lista_errores.clear()
+    n_linea = 1
+
+
 def separar(i, id, etiqueta, objeto):
     dot = ""
 
@@ -325,8 +339,48 @@ def separar(i, id, etiqueta, objeto):
     return dot
 
 
+def getErrores():
+    global lista_errores
+
+    formatoErrores = '{\n'
+
+    for i in range(len(lista_errores)):
+        error = lista_errores[i]
+        formatoErrores += error.operar(i+1)
+        if len(lista_errores) != 0:
+            formatoErrores += ',\n'
+        else:
+            formatoErrores += '\n'
+
+    # contador = 1
+    # while lista_errores:
+    #     error = lista_errores.pop(0)
+    #     formatoErrores += error.operar(contador)
+    #     if len(lista_errores) != 0:
+    #         formatoErrores += ',\n'
+    #     else:
+    #         formatoErrores += '\n'
+    #     contador += 1
+
+    formatoErrores += '}'
+
+    return formatoErrores
+
+
+def CrearArchivoErrores():
+
+    nombre = "ERRORES_202044192"+".json"
+
+    # Creación del dot
+    with open(nombre, 'w') as f:
+        f.write(getErrores())
+
+    # creamos la imagen
+    os.system(nombre)
+
+
 entrada = '''{
-    {
+    { @
         "Operacion":"Resta"
         "Valor1":-650
         "Valor2":[
@@ -334,7 +388,7 @@ entrada = '''{
                 "Valor1":2.11
                 "Valor2":1.5329
                 ]
-    },
+    }, @
     {
         "Operacion":"Multiplicacion"
         "Valor1":4
@@ -347,7 +401,7 @@ entrada = '''{
                 "Valor2":2 
                 ]
         ]
-    },
+    },@
     {
         "Operacion":"Suma"
         "Valor1":[
@@ -366,3 +420,5 @@ entrada = '''{
 # instruccion(entrada)
 # operar_()
 # graficar()
+
+# CrearArchivoErrores()

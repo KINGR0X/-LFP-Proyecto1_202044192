@@ -7,7 +7,7 @@ from tkinter import ttk
 from tkinter import messagebox
 from tkinter import scrolledtext
 from tkinter.filedialog import asksaveasfilename
-from analizador_lexico import instruccion, operar_, generarGrafica, limpiarLista
+from analizador_lexico import instruccion, operar_, generarGrafica, limpiarLista,  CrearArchivoErrores, limpiarListaErrores
 import os
 
 
@@ -28,17 +28,18 @@ class Pantalla_principal():
         r.geometry(f"+{x}+{y}")
 
     def pantalla_1(self):
-        self. Frame = Frame(height=500, width=1000)
+        self. Frame = Frame(height=500, width=1100)
         self.Frame.config(bg="#37474f")
         self.Frame.pack(padx=25, pady=25)
         self.text = ''
-        posicionx1 = 380
-        posicionx2 = 705
+        posicionx1 = 480
+        posicionx2 = 809
+        self.analizado = False
 
         # encabezado de Archivo
         Label(self.Frame, text="Archivo", font=(
             "Roboto Mono", 24), fg="white",
-            bg="#19A7CE", width=18, justify="center").place(x=300, y=0)
+            bg="#19A7CE", width=18, justify="center").place(x=405, y=0)
         # botones de Archivo
         Button(self.Frame, command=self.abrirArchivo, text="Abrir archivo", font=(
             "Roboto Mono", 20), fg="black",
@@ -56,7 +57,7 @@ class Pantalla_principal():
             "Roboto Mono", 20), fg="black",
             bg="white", width=12).place(x=posicionx1, y=270)
 
-        Button(self.Frame, text="Errores", font=(
+        Button(self.Frame, command=self.getErrores, text="Errores", font=(
             "Roboto Mono", 20), fg="black",
             bg="white", width=12).place(x=posicionx1, y=340)
 
@@ -67,7 +68,7 @@ class Pantalla_principal():
         # encabezado de Ayuda
         Label(self.Frame, text="Ayuda", font=(
             "Roboto Mono", 24), fg="white",
-            bg="#19A7CE", width=18, justify="center").place(x=651, y=0)
+            bg="#19A7CE", width=18, justify="center").place(x=755, y=0)
 
         # botones de Ayuda
 
@@ -84,7 +85,7 @@ class Pantalla_principal():
             bg="white", width=14).place(x=posicionx2, y=200)
 
         self.cuadroTexto = scrolledtext.ScrolledText(self.Frame, font=(
-            "Times New Roman", 15), fg='white', bg="#45545c", width=30, height=23)
+            "Times New Roman", 15), fg='white', bg="#45545c", width=39, height=23)
 
         self.cuadroTexto.place(x=0, y=0)
 
@@ -98,6 +99,7 @@ class Pantalla_principal():
         self.Frame.mainloop()
 
     def abrirArchivo(self):
+        self.analizado = False
         x = ""
         self.archivo_seleccionado = ''
         Tk().withdraw()
@@ -111,12 +113,12 @@ class Pantalla_principal():
 
             self.texto = x
 
-            # se separa el nombre del archivo en directorio y nombre
-            os.path.split(filename)
-            # se obtiene el nombre del archivo con la extension
-            self.filename = os.path.split(filename)[1]
-            # se obtiene el nombre del archivo sin la extension
-            self.filename = os.path.splitext(self.filename)[0]
+            # # se separa el nombre del archivo en directorio y nombre
+            # os.path.split(filename)
+            # # se obtiene el nombre del archivo con la extension
+            # self.filename = os.path.split(filename)[1]
+            # # se obtiene el nombre del archivo sin la extension
+            # self.filename = os.path.splitext(self.filename)[0]
 
             # Elimina contenido del cuadro
             self.cuadroTexto.delete(1.0, "end")
@@ -130,12 +132,15 @@ class Pantalla_principal():
             return
 
     def ejecutar(self):
-
+        # variable para saber si ya se presiono el boton de analizar
+        self.analizado = True
+        # En caso de que despues de analizar un arhivo se analice otro se limpian las listas
+        limpiarListaErrores()
         limpiarLista()
         try:
             instruccion(self.texto)
             operar_()
-            generarGrafica(str(self.filename))
+            generarGrafica(str("RESULTADOS_202044192"))
 
             # set contenido
             messagebox.showinfo("Analisis completado",
@@ -147,14 +152,20 @@ class Pantalla_principal():
             return
 
     def guardar(self):
-        # Tomar datos que esta en el cuadro de texto
-        self.texto = self.cuadroTexto.get(1.0, "end")
+        try:
+            # Tomar datos que esta en el cuadro de texto
+            self.texto = self.cuadroTexto.get(1.0, "end")
 
-        archivo = open(self.archivo_seleccionado, 'w', encoding="utf-8")
-        archivo.write(self.texto)
+            archivo = open(self.archivo_seleccionado, 'w', encoding="utf-8")
+            archivo.write(self.texto)
 
-        # mensaje de guardado
-        messagebox.showinfo("Guardado", "Archivo guardado con exito")
+            # mensaje de guardado
+            messagebox.showinfo("Guardado", "Archivo guardado con exito")
+
+        except:
+            messagebox.showerror(
+                "Error", "No se ha seleccionado ningún archivo")
+            return
 
     def guardarComo(self):
         try:
@@ -176,6 +187,22 @@ class Pantalla_principal():
         except:
             messagebox.showerror(
                 "Error", "No se ha seleccionado ningún archivo")
+            return
+
+    def getErrores(self):
+        # Solo generamos los errores si ya se ha presionado el boton de analizar, porque si se presiona guardar sin analizar no se generan errores
+        if (self.analizado == False):
+            messagebox.showerror(
+                "Error", "Para generar el archivo de errores primero debe de analizar el archivo")
+            return
+        try:
+            CrearArchivoErrores()
+            # mensaje de guardado
+            messagebox.showinfo(
+                "Guardado", "Archivo de errores generado con exito")
+        except:
+            messagebox.showerror(
+                "Error", "No se ha podido generar el archivo de errores")
             return
 
 
