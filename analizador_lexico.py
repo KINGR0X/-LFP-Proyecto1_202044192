@@ -480,42 +480,42 @@ def CrearArchivoErrores():
     os.system(f'start notepad.exe {ruta}')
 
 
-entrada = '''{
-    { @
-        "Operacion":"Resta"
-        "Valor1":-650
-        "Valor2":[
-                "Operacion":"Suma"
-                "Valor1":2.11
-                "Valor2":1.5329
-                ]
-    }, @
-    {
-        "Operacion":"Multiplicacion"
-        "Valor1":4
-        "Valor2": [
-            "Operacion":"Potencia"
-            "Valor1":2
-            "Valor2":[
-                "Operacion":"Raiz"
-                "Valor1":9
-                "Valor2":2 
-                ]
-        ]
-    },@
-    {
-        "Operacion":"Suma"
-        "Valor1":[
-        "Operacion":"Coseno"
-        "Valor1":180
-        ]
-        "Valor2":5.32
-    }
-    "Texto":"===Realizacion de Operaciones===="
-    "Color-Fondo-Nodo":"Amarillo"
-    "Color-Fuente-Nodo":"Verde"
-    "Forma-Nodo":"Ovaloasd"
-}'''
+# entrada = '''{
+#     { @
+#         "Operacion":"Resta"
+#         "Valor1":-650
+#         "Valor2":[
+#                 "Operacion":"Suma"
+#                 "Valor1":2.11
+#                 "Valor2":1.5329
+#                 ]
+#     }, @
+#     {
+#         "Operacion":"Multiplicacion"
+#         "Valor1":4
+#         "Valor2": [
+#             "Operacion":"Potencia"
+#             "Valor1":2
+#             "Valor2":[
+#                 "Operacion":"Raiz"
+#                 "Valor1":9
+#                 "Valor2":2
+#                 ]
+#         ]
+#     },@
+#     {
+#         "Operacion":"Suma"
+#         "Valor1":[
+#         "Operacion":"Coseno"
+#         "Valor1":180
+#         ]
+#         "Valor2":5.32
+#     }
+#     "Texto":"===Realizacion de Operaciones===="
+#     "Color-Fondo-Nodo":"Amarillo"
+#     "Color-Fuente-Nodo":"Verde"
+#     "Forma-Nodo":"Ovaloasd"
+# }'''
 
 
 # instruccion(entrada)

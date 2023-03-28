@@ -4,7 +4,7 @@
 
 1. Tener instalado en la computadora python.
 2. tener instalado en la computadora Visual Studio Code.
-3. Tener un previsualixador de markdown en Visual Studio Code.
+3. Tener un previsualizador de markdown en Visual Studio Code.
 
 ## Botones de Archivo
 
